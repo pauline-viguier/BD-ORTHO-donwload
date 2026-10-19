@@ -47,6 +47,7 @@ def mark_selection(selected_tiles: list[str]) -> None:
         base, ext = os.path.splitext(tile_path)
         new_name = f"{base}_{SELECTION_MARK}{ext}"
         os.rename(tile_path, new_name)
+        
     print(f"Marked {len(selected_tiles)} tiles with '{SELECTION_MARK}'.")
 
 
