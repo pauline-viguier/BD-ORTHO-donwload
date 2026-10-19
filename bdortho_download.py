@@ -14,25 +14,25 @@ import xml.etree.ElementTree as ET
 BASE_URL = "https://data.geopf.fr/telechargement"
 RESOURCE = "BDORTHO"
 
-# Dossier principal de téléchargement
-DOWNLOAD_DIR = Path("/home/pviguier/Bureau/bdortho") # on ajoute le dossier au chemin 
+# Dossier principal de telechargement
+DOWNLOAD_DIR = Path("./bdortho_downloads") # on ajoute le dossier au chemin 
 
-# VÉRIFICATION DES ARGUMENTS
-# verifie qu'on lui donne deux arguments en lancant le code le nom du .py et le numero de département 
+# VERIFICATION DES ARGUMENTS
+# verifie qu'on lui donne deux arguments en lancant le code le nom du .py et le numero de departement 
 if len(sys.argv) != 2:
     print("Usage : python3 bdortho.py ")
     sys.exit(1)
-# récupère le numero de département 
+# recupere le numero de departement 
 ZONE = sys.argv[1].upper()
 
 print()
 print("TELECHARGEMENT BD ORTHO")
-print(f"Département : {ZONE}")
+print(f"Departement : {ZONE}")
 print(f"Dossier     : {DOWNLOAD_DIR / ZONE}")
 print()
 
-# FONCTION : TÉLÉCHARGER DU XML
-# permet de contacter le serveur avec l'url donné et lire la réponse et parcourt le xml 
+# FONCTION : TELECHARGER DU XML
+# permet de contacter le serveur avec l'url donne et lire la reponse et parcourt le xml 
 def get_xml(url):
     print(f"Interrogation : {url}")
 
@@ -47,8 +47,8 @@ def get_xml(url):
         data = response.read()
 
     return ET.fromstring(data)
-# RÉCUPÉRATION DES ÉDITIONS
-# creation de l'url de l'api pour récupérer le fichier xml principal pour un département 
+# RECUPERATION DES EDITIONS
+# creation de l'url de l'api pour recuperer le fichier xml principal pour un departement 
 url = (
     f"{BASE_URL}/resource/{RESOURCE}"
     f"?zone={ZONE}&page=1&limit=50"
@@ -61,7 +61,7 @@ root = get_xml(url) # on contacte le serveur
 # on notifie que c'est des xml au format atom 
 ATOM = "{http://www.w3.org/2005/Atom}"
 
-# liste d'éditions : nom des bdortho existantes par département : BDORTHO_1-0_RVB-0M20_JP2-E080_LAMB93_D066_2015-01-01 qu'on rcupère dans le xml entre les  <title> et on ne garde que les RVB 
+# liste d'editions : nom des bdortho existantes par departement : BDORTHO_1-0_RVB-0M20_JP2-E080_LAMB93_D066_2015-01-01 qu'on rcupere dans le xml entre les  <title> et on ne garde que les RVB 
 editions = []
 
 
@@ -79,21 +79,21 @@ editions = sorted(set(editions))
 
 if not editions:
     print()
-    print("Aucune édition RVB trouvée.")
+    print("Aucune edition RVB trouvee.")
     sys.exit(0)
 
 
 print()
-print(f"{len(editions)} édition(s) RVB trouvée(s).")
+print(f"{len(editions)} edition(s) RVB trouvee(s).")
 print()
 
 
-# TRAITEMENT DE CHAQUE ÉDITION
+# TRAITEMENT DE CHAQUE EDITION
 
 for edition in editions:
 
-    # Récupération de l'année
-# pour chaque edition (année) on crée un dossier, on construit l'url et on récuère le nouveau xml 
+    # Recuperation de l'annee
+# pour chaque edition (annee) on cree un dossier, on construit l'url et on recuere le nouveau xml 
     match = re.search(r"_(\d{4})-\d{2}-\d{2}$", edition)
 
     if match:
@@ -101,16 +101,16 @@ for edition in editions:
     else:
         year = "inconnu"
 
-    print(f"Année : {year}")
+    print(f"Annee : {year}")
 
-    # Création du dossier
+    # Creation du dossier
 
     year_dir = DOWNLOAD_DIR / ZONE / year
 
     year_dir.mkdir(parents=True, exist_ok=True)
 
     # Interrogation de la sous-ressource
-# on crée l'url pour chaque édition donc chaque année 
+# on cree l'url pour chaque edition donc chaque annee 
     edition_url = (
         f"{BASE_URL}/resource/{RESOURCE}/{edition}"
         f"?page=1&limit=50"
@@ -119,8 +119,8 @@ for edition in editions:
     edition_root = get_xml(edition_url)
 
   
-    # Récupération des URLs des fichiers
-#  on récupère les urls de telechargement des fichiers zippes : files = "https://data.geopf.fr/...7z.001"] qui se trouve dans la section href du xml 
+    # Recuperation des URLs des fichiers
+#  on recupere les urls de telechargement des fichiers zippes : files = "https://data.geopf.fr/...7z.001"] qui se trouve dans la section href du xml 
     files = []
 
     for entry in edition_root.findall(f"{ATOM}entry"):
@@ -138,15 +138,15 @@ for edition in editions:
 
 
     if not files:
-        print("Aucun fichier trouvé pour cette édition.")
+        print("Aucun fichier trouve pour cette edition.")
         continue
 
 
     print()
-    print(f"{len(files)} fichier(s) à télécharger.")
+    print(f"{len(files)} fichier(s) a telecharger.")
     print()
 
-    # Téléchargement des fichiers finaux 
+    # Telechargement des fichiers finaux 
 
     for number, file_url in enumerate(files, start=1):
 
@@ -161,7 +161,7 @@ for edition in editions:
             # Dossier de destination
             f"--dir={year_dir}",
 
-            # Reprendre un téléchargement interrompu
+            # Reprendre un telechargement interrompu
             "--continue=true",
 
             # Nombre de tentatives
@@ -203,7 +203,7 @@ for edition in editions:
 
 print()
 print("==============================================")
-print("TOUS LES TELECHARGEMENTS SONT TERMINÉS")
+print("TOUS LES TELECHARGEMENTS SONT TERMINES")
 print("==============================================")
 print()
 print(f"Les fichiers sont dans :")
