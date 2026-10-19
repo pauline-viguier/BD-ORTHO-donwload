@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-### USAGE: python select_tiles_by_poly.py <dir_tiles> <file_polygon>
+### USAGE: python mark_tiles_in_poly.py <dir_tiles> <file_polygon>
 
 
 
@@ -57,7 +57,7 @@ def mark_selection(selected_tiles: list[str]) -> None:
 if __name__ == "__main__":
 
     if len(sys.argv) != 3:
-        print("Usage: python select_tiles_by_poly.py <dir_tiles> <file_polygon>")
+        print("Usage: python mark_tiles_in_poly.py <dir_tiles> <file_polygon>")
         sys.exit(1)
 
     selection = select_tiles(
