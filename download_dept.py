@@ -1,5 +1,6 @@
-
 #!/usr/bin/env python3
+
+### USAGE: python download_dept.py <department_code>
 
 import sys
 import re
